@@ -3,6 +3,8 @@
 	xmlns:premis="info:lc/xmlns/premis-v2" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exclude-result-prefixes="xsi premis">
 	
+	
+	
 	<xsl:output method="xml" omit-xml-declaration="yes" encoding="UTF-8" indent="yes"/>
 	<xsl:strip-space elements="*" />
 	
@@ -89,6 +91,34 @@
 				</table>
 			</div>
 		</fieldset>
+	
+	<!-- PREMIS RIGHTS CONTAINER -->
+	<fieldset class="form-wrapper">
+		<legend>
+			<span class="fieldset-legend">PREMIS Rights</span>
+		</legend>
+		<div class="fieldset-wrapper">
+			<table class="sticky-header" style="position: fixed; top: 65px; left: 152.5px; visibility: hidden; width: 600px;">
+				<thead style="display: block;">
+					<tr>
+						<th style="width: 279px; display: table-cell;">Field</th>
+						<th style="width: 279px; display: table-cell;">Value</th>
+					</tr>
+				</thead>
+			</table>
+			<table class="islandora_premis_table sticky-enabled tableheader-processed sticky-table">
+				<thead>
+					<tr>
+						<th>Field</th>
+						<th>Value</th>
+					</tr>
+				</thead>
+				<tbody>
+					<xsl:apply-templates select="premis:rights"/>
+				</tbody>
+			</table>
+		</div>
+	</fieldset>
 	</xsl:template>
 	
 	<xsl:template match="premis:object[@xsi:type='file']">		
@@ -188,4 +218,23 @@
 		</tr>
 	</xsl:template>
 	
+	
+	<xsl:template match="premis:rights">
+		<tr class="odd">
+			<td class="islandora_premis_table_labels"><xsl:value-of
+				select="name(premis:rightsStatement/premis:rightsStatementIdentifier/premis:rightsStatementIdentifierType)"/></td>
+			<td class="islandora_premis_table_values"><xsl:value-of select="premis:rightsStatement/premis:rightsStatementIdentifier/premis:rightsStatementIdentifierType"/></td>
+		</tr>
+		<tr class="even">
+			<td class="islandora_premis_table_labels"><xsl:value-of select="name(premis:rightsStatement/premis:rightsStatementIdentifier/premis:rightsStatementIdentifierValue)"/></td>
+			<td class="islandora_premis_table_values"><xsl:value-of select="premis:rightsStatement/premis:rightsStatementIdentifier/premis:rightsStatementIdentifierValue"/></td>
+		</tr>
+		<tr class="odd">
+			<td class="islandora_premis_table_labels"><xsl:value-of
+				select="name(premis:rightsStatement/premis:rightsBasis)"/></td>
+			<td class="islandora_premis_table_values"><xsl:value-of select="premis:rightsStatement/premis:rightsBasis"/></td>
+		</tr>
+<!-- to do: flesh out rights -->
+
+	</xsl:template>
 </xsl:stylesheet>
