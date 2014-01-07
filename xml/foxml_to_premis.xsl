@@ -19,9 +19,13 @@
     <xsl:param name="premis_agent_identifier_organization" />
     <xsl:param name="premis_agent_identifier_type" />
     <xsl:param name="premis_agent_type_organization" />
+    <!-- parameters for rights -->
+    <xsl:param name="premis_rights_statuteInformation_statuteJurisdiction"/>
+    <xsl:param name="premis_rights_copyrightInformation_copyrightStatus_copyrightJurisdiction"/>
+    
     <!-- Note: the version number is current at time of deriving PREMIS, not at time of creation of audit log entry. -->
     <xsl:param name="fedora_commons_version" />
-    
+
     <xsl:preserve-space elements="*" />
     
     <xsl:template match="foxml:digitalObject">
@@ -172,44 +176,46 @@
                         <!-- values are copyright, license, statue, other -->
                         <xsl:choose>
                             <xsl:when
-                                test="contains(/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion/foxml:xmlContent/oai_dc:dc/dc:rights,'copyright')
+                                test="contains(/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/dc:rights,'copyright')
                                 or
-                                contains(/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion/foxml:xmlContent/oai_dc:dc/dc:rights,'public domain')
-                                ">copyright</xsl:when>
+                                contains(/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/dc:rights,'public domain')">copyright</xsl:when>
                             <xsl:when
-                                test="contains(/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion/foxml:xmlContent/oai_dc:dc/dc:rights,'creative commons')"
+                                test="contains(/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/dc:rights,'creative commons')"
                                 >license</xsl:when>
                             <xsl:otherwise>other</xsl:otherwise>
                         </xsl:choose>
                     </rightsBasis>
                     <xsl:choose>
                         <xsl:when
-                            test="/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion/foxml:xmlContent/oai_dc:dc/dc:rights[contains(.,'copyright')
-                            or contains(.,'public domain')]">
+                            test="contains(/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/dc:rights,'copyright')
+                            or contains(/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/dc:rights,'public domain')">
                             <copyrightInformation>
                                 <copyrightStatus><!-- values include copyrighted, publicdomain, unknown -->
                                     <xsl:choose>
                                         <xsl:when
-                                            test="/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion/foxml:xmlContent/oai_dc:dc/dc:rights[contains(.,'copyright')]"
+                                            test="contains(/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/dc:rights,'copyright')"
                                             >copyrighted</xsl:when>
                                         <xsl:when
-                                            test="/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion/foxml:xmlContent/oai_dc:dc/dc:rights[contains(.,'public domain')]">public domain</xsl:when>
+                                            test="contains(/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/dc:rights,'public domain')">public domain</xsl:when>
                                         <xsl:otherwise>unknown</xsl:otherwise>
                                     </xsl:choose>
                                 </copyrightStatus>
-                                <copyrightJurisdiction>ca</copyrightJurisdiction>
+                                <copyrightJurisdiction><xsl:value-of select="$premis_rights_copyrightInformation_copyrightStatus_copyrightJurisdiction" /></copyrightJurisdiction>
+                                <copyrightNote><xsl:value-of
+                                    select="/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/dc:rights"/></copyrightNote>
                             </copyrightInformation>
                         </xsl:when>
                         <xsl:when
-                            test="/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion/foxml:xmlContent/oai_dc:dc/dc:rights[contains(.,'creative commons')]">
+                            test="contains(/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/dc:rights,'creative commons')">
                             <licenseInformation>
-                                <licenseTerms><xsl:value-of select="/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion/foxml:xmlContent/oai_dc:dc/dc:rights"/></licenseTerms>
+                                <licenseTerms><xsl:value-of select="/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/dc:rights"/></licenseTerms>
                             </licenseInformation>
                         </xsl:when>
                         <xsl:otherwise>
                             <statuteInformation>
-                                <statuteJurisdiction>ca</statuteJurisdiction>
+                                <statuteJurisdiction><xsl:value-of select="$premis_rights_statuteInformation_statuteJurisdiction" /></statuteJurisdiction>
                                 <statuteCitation><!-- An identifying designation for the statute.  --></statuteCitation>
+                                <statuteNote><xsl:value-of select="/foxml:digitalObject/foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/oai_dc:dc/dc:rights"/></statuteNote>
                             </statuteInformation>
                         </xsl:otherwise>
                     </xsl:choose>
