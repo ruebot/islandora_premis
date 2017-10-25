@@ -81,8 +81,7 @@ function islandora_premis_xml_download($output) {
  *   The content to download.
  */
 function _islandora_premis_xml_download($output) {
-  $pid = arg(2);
-  $object = islandora_object_load($pid);
+  $object = menu_get_object('islandora_object', 2);
   if (islandora_object_access('download premis metadata', $object)) {
     drupal_add_http_header('Content-type', 'text/xml;charset=utf8');
     drupal_add_http_header('Content-length', strlen($output));
