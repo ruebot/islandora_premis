@@ -90,7 +90,7 @@ function _islandora_premis_xml_download($output) {
     drupal_page_footer();
   }
   else {
-    watchdog('access denied', check_plain($_GET['q']), NULL, WATCHDOG_WARNING);
+    watchdog('access denied', '!q', array('!q' => check_plain($_GET['q'])), WATCHDOG_WARNING);
     drupal_add_http_header('Status', '403 Forbidden');
   }
 }
